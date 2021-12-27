@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="600" height="600" style="border: 1px solid black;"></canvas>
+    <button onclick="startGame()">start</button>
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const canvasH = canvas.height
+        const canvasW = canvas.width
+        let rightPressed = false;
+        let leftPressed = false;
+        let x, y, dx, dy, interval, radius, paddleW, paddleX, paddleY
+        let bricks = []
+        setVarible()
+        drawBall()
+        drawPaddle()
+        paddleNavigation()
+        drawBricks()
+        // startGame()
+        function startGame() {
+            if (!interval) {
+                interval = setInterval(() => {
+                    if (rightPressed) {
+                        paddleX = paddleX + 5
+                    }
+                    if (leftPressed) {
+                        paddleX = paddleX - 5
+                    }
+                    detectCollision()
+                    x = x + dx
+                    y = y + dy
+                    gameOver()
+                    ctx.clearRect(0, 0, canvasW, canvasH)
+                    drawBall()
+                    drawPaddle()
+                    drawBricks()
+                }, 20)
+            }
+        }
+        function detectCollision() {
+            if (x + dx > canvasW || x + dx <= 0) {
+                dx = -dx
+            }
+            if (y + dy > canvasH - raidus) {
+                if (x + dx > paddleX && x + dx < (paddleX + paddleW)) {
+                    dy = -dy
+                }
+            }
+            if (y + dy > canvasH || y + dy < 0) {
+                dy = -dy
+            }
+            for (let b = 0; b < bricks.length; b++) {
+                for (let i = 0; i < bricks.length; i++) {
+                    const brick=bricks[b][i]
+                    console.log(bricks[b][i])
+                    if (x > brick.x && x < brick.x + brickW && y > brick.y && y < brick.y + brickH) {
+                        dy = -dy
+                    }
+                }
+            }
+        }
+        function gameOver() {
+            if (y === canvasH) {
+                clearInterval(interval)
+                interval = null
+                setVarible()
+            }
+        }
+        function setVarible() {
+            x = canvasW / 2
+            y = canvasH - 20
+            dx = 5
+            dy = -5
+            raidus = 10
+            paddleW = 50
+            paddleX = canvasW / 2 - paddleW / 2
+            paddleY = canvasH - 10
+            brickW = 80
+            brickH = 10
+            brickOffset = 20
+
+        }
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(x, y, raidus, 0, 2 * Math.PI, false)
+            ctx.fillStyle = "green"
+            ctx.fill()
+            ctx.closePath()
+        }
+        function drawPaddle() {
+            ctx.beginPath();
+            ctx.rect(paddleX, paddleY, paddleW, 10)
+            ctx.fillStyle = "yellow"
+            ctx.fill()
+            ctx.closePath()
+        }
+        function paddleNavigation() {
+            document.addEventListener("keydown", handleKeyDown)
+            document.addEventListener("keyup", handleKeyUp)
+            function handleKeyDown(e) {
+                console.log(e.key)
+                if (e.key === "ArrowRight") {
+                    rightPressed = true
+                }
+                if (e.key === "ArrowLeft") {
+                    leftPressed = true
+                }
+            }
+            function handleKeyUp(e) {
+                console.log(e.key)
+                if (e.key === "ArrowRight") {
+                    rightPressed = false
+                }
+                if (e.key === "ArrowLeft") {
+                    leftPressed = false
+                }
+            }
+        }
+        function drawBricks() {
+            for (let i = 0; i < 3; i++) {
+                bricks[i] = []
+                for (let j = 0; j < 6; j++) {
+                    brickX = 10 + j * (brickW + brickOffset)
+                    brickY = (10 + brickOffset) * (i + 1)
+                    bricks[i][j] = { x: brickX, y: brickY }
+                    ctx.beginPath();
+                    ctx.rect(brickX, brickY, brickW, brickH)
+                    ctx.fillStyle = "red"
+                    ctx.fill()
+                    ctx.closePath()
+
+                }
+            }
+            console.log(bricks)
+        }
+    </script>
+</body>
+
+</html>
