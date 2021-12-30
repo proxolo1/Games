@@ -5,143 +5,142 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game</title>
-    <script src="https://kit.fontawesome.com/776c2e42dc.js" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Document</title>
 </head>
 
-<body>
-    <div class="m-4">
-        <canvas id="canvas" width="600" height="600" style="border:2px solid black;"></canvas>
-        <div style="position:absolute; top: 120px; right:400px;">
-            <h1><i class="fas fa-gamepad"></i> Score : <span id="score"></span></h1>
-        </div>
-        <button onclick="moveSnake()">start</button>
+<body bgcolor="#0000">
+    <div align="center" style="margin: 30px;">
+        <canvas id="canvas" width="500" height="500" style="border: 1px solid rgb(255, 255, 255)"></canvas>
+        <br>
+        <h1 align="center" style="background-color:rgb(23, 196, 219)">Score is :<span id="score"></span></h1>
+
     </div>
     <script>
         const canvas = document.getElementById("canvas")
         const ctx = canvas.getContext("2d")
-        let snakeW = snakeH = 10
+        let snake = [{ x: 10, y: 10 }]
         let canvasW = canvas.width
         let canvasH = canvas.height
-        let dx, dy, foodX, foodY, interval, snake, leftPressed, rightPressed, upPressed, downPressed, score,head
-        initializeVariables()
+        let snakeW=snakeH= 10,interval,head,dx=10,dy=0,leftPressed=rightPressed=downPressed=upPressed=false,foodX,foodY,score=0
+        document.getElementById('score').innerHTML =score
         drawSnake()
-        //moveSnake()
-        drawFood()
-        randomPosition()
+        randomFood()
         snakeNavigation()
+        moveSnake()
         function drawSnake() {
-
-            snake.forEach((snake) => {
-                ctx.beginPath();
+            snake.forEach(snake => {
+                ctx.beginPath()
                 ctx.rect(snake.x, snake.y, snakeW, snakeH)
-                ctx.fillStyle = 'black'
+                ctx.fillStyle = "red"
                 ctx.fill()
                 ctx.closePath()
             })
         }
-        function moveSnake() {
-            if (!interval) {
-                interval = setInterval(() => {
-                    handleDirection()
-                    detectCollision()
-                    head = { x: snake[0].x + dx, y: snake[0].y + dy }
-                    snake.unshift(head)
-                    snake.pop()
-                    //snake.forEach(snake => snake.x += 2)
-                    ctx.clearRect(0, 0, canvasW, canvasH)
-                    drawSnake()
-                    drawFood()
-                    growSnakes()
-
-                }, 80)
-            }
+        function moveSnake(){
+            interval = setInterval(()=>{
+                snakeDirection()
+               snakeContinue()
+                head={x:snake[0].x+dx, y:snake[0].y+dy}
+                snake.unshift(head)
+                snake.pop()
+                ctx.clearRect(0, 0, canvasW, canvasH)
+                snakeGrow()
+                drawSnake()
+                drawFood()
+                gameOver()
+            },100)
+        }
+        function snakeContinue(){
+            if(snake[0].x===canvasW){
+                    //snake = [{ x: snakeW, y: snake[0].y }]
+                    head={x:snakeW, y:snake[0].y}
+                snake.unshift(head)
+                snake.pop()
+                }
+                if(snake[0].x===0){
+                  //  snake = [{ x: canvasW, y: snake[0].y }]
+                    head={x:canvasW, y:snake[0].y}
+                snake.unshift(head)
+                snake.pop()
+                }
+                if(snake[0].y===canvasH){
+                   // snake = [{ x: snake[0].x, y:snakeH}]
+                   head={x:snake[0].x, y:snakeH}
+                snake.unshift(head)
+                snake.pop()
+                }
+                if(snake[0].y===0){
+                   // snake = [{ x: snake[0].x, y: canvasH }]
+                   head={x:snake[0].x, y:canvasH}
+                snake.unshift(head)
+                snake.pop()
+                }
         }
         function snakeNavigation() {
-            document.addEventListener('keydown', handleKeyDown)
-            document.addEventListener('keyup', handleKeyUp)
-            function handleKeyDown(e) {
-                if (e.key === 'ArrowDown') { downPressed = true }
-                if (e.key === 'ArrowUp') { upPressed = true }
-                if (e.key === 'ArrowLeft') { leftPressed = true }
-                if (e.key === 'ArrowRight') { rightPressed = true }
+            document.addEventListener('keydown',handleKeyDown)
+            //document.addEventListener('keyup',handleKeyUp)
+            function handleKeyDown(e){
+                if(!upPressed){
+                if (e.key === 'ArrowDown'||e.key === 's') { downPressed = true;upPressed = false;leftPressed=false;rightPressed=false}}
+                if(!downPressed){
+                if (e.key === 'ArrowUp'||e.key === 'w') { upPressed = true;downPressed = false;leftPressed=false;rightPressed= false}}
+                if(!rightPressed){
+                if (e.key === 'ArrowLeft'||e.key === 'a') { leftPressed = true;downPressed=false;upPressed= false;rightPressed= false}}
+                if(!leftPressed){
+                if (e.key === 'ArrowRight'||e.key === 'd') { rightPressed = true;leftPressed=false;upPressed=false;downPressed= false}}
             }
-            function handleKeyUp(e) {
-                if (e.key === 'ArrowDown') { downPressed = false }
-                if (e.key === 'ArrowUp') { upPressed = false }
-                if (e.key === 'ArrowLeft') { leftPressed = false }
-                if (e.key === 'ArrowRight') { rightPressed = false }
+            // function handleKeyUp(e){
+            //     if (e.key === 'ArrowDown'||e.key === 's') { downPressed = false }
+            //     if (e.key === 'ArrowUp'||e.key === 'w') { upPressed = false }
+            //     if (e.key === 'ArrowLeft'||e.key === 'a') { leftPressed = false }
+            //     if (e.key === 'ArrowRight'||e.key === 'd') { rightPressed = false }
+            // }
+        }
+        function snakeDirection(){
+           
+            if(downPressed){ 
+                dy=snakeW
+                dx=0
+                
+            }
+            if(upPressed){ 
+                dy=-snakeW
+                dx=0
+            }
+            if(leftPressed){  
+                dy=0
+                dx=-snakeW
+            }
+            if(rightPressed){ 
+                dy=0
+                dx=snakeW
             }
         }
-        function handleDirection() {
-            if (downPressed) {
-                dy = snakeW
-                dx = 0
-            }
-            if (rightPressed) {
-                dx = snakeW
-                dy = 0
-            }
-            if (leftPressed) {
-                dx = -snakeW
-                dy = 0
-            }
-            if (upPressed) {
-                dy = -snakeW
-                dx = 0
-            }
-            
-        }
-        function randomPosition() {
-            foodX = Math.floor(Math.random() * (canvasW-100) / 10) * 10
-            foodY = Math.floor(Math.random() * (canvasH-100) / 10) * 10
-            console.log(foodX, foodY)
-        }
-        function drawFood() {
+        function drawFood(){
             ctx.beginPath()
-            ctx.rect(foodX, foodY, snakeW, snakeH)
-            ctx.fillStyle = "green"
+            ctx.rect(foodX,foodY,snakeW,snakeH)
+            ctx.fillStyle="yellow"
             ctx.fill()
             ctx.closePath()
         }
-        function growSnakes() {
-            if (snake[0].x === foodX && snake[0].y === foodY) {
-                snake.push({ x: foodX, y: foodY })
-                randomPosition()
-                score += 1
-                document.getElementById('score').innerHTML = score
+        function randomFood(){
+            foodX=Math.floor(Math.random()*canvasW/10)* 10
+            foodY=Math.floor(Math.random()*canvasH/10)* 10
+        }
+        function snakeGrow(){
+            if(snake[0].x===foodX&&snake[0].y===foodY){
+                snake.push({x:foodX,y:foodY})
+                randomFood()
+                score +=2
+                document.getElementById('score').innerHTML=score
             }
         }
-        function detectCollision() {
-            if (snake[0].x >= canvasW || snake[0].x <= 0 || snake[0].y >= canvasH || snake[0].y <= 0) {
-               // alert('game over')
-                reset()
-            }
-            snake.forEach((snake)=>{
-                console.log(snake.x)
-                console.log(head)
+        function gameOver(){
+           
+            snake.forEach(snake=>{
+                console.log(snake)
+             
             })
-        }
-        function reset() {
-            clearInterval(interval)
-            initializeVariables()
-            randomPosition()
-         //   moveSnake()
-
-
-        }
-        function initializeVariables() {
-            snake = [
-                { x: 20, y: 10 }
-            ]
-            interval = null
-            dx = snakeW
-            dy = 0
-            leftPressed = rightPressed = upPressed = downPressed = false
-            score = 0
-            document.getElementById("score").innerHTML = score
         }
     </script>
 </body>
