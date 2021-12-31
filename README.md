@@ -3,4 +3,8 @@
 
 # 2. SNAKE GAME 🐍 
 
-![Screenshot (141)](https://user-images.githubusercontent.com/73517233/147589509-ba408fee-fed3-48ba-bb9f-1d17b41af1f4.png)
+
+
+
+https://user-images.githubusercontent.com/73517233/147806067-da396eae-a269-46c2-9f3a-94f950866eaf.mp4
+
