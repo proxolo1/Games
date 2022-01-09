@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        td {
+            width: 100px;
+            height: 100px;
+            border: 5px solid #94B3FD;
+            text-align: center;
+            font-size:30px;
+        }
+
+        table tr:first-child td {
+            border-top: none;
+        }
+
+        table tr:last-child td {
+            border-bottom: none;
+        }
+
+        table tr td:first-child {
+            border-left: none;
+        }
+
+        table tr td:last-child {
+            border-right: none;
+        }
+        .tic{
+            margin-top:80px;
+        }
+        code,span{
+            font-size:50px;
+        }
+        button{
+            margin: 50px;
+            font-size:20px;
+            background-color: rgb(10, 107, 75);
+            padding:8px;
+            border-radius: 20px;
+            color: white;
+        }
+        button:hover{
+            background-color:rgb(27, 52, 133);
+        }
+    </style>
+</head>
+
+<body><div align="center">
+     <span>X : <code id="scoreX"></code>   ,</span>
+       <span> O : <code id="scoreY"></code></span>
+    </div>
+    <div align="center" class="tic">
+       
+    <table>
+        <tr>
+            <td class="cell"></td>
+            <td class="cell"></td>
+            <td class="cell"></td>
+        </tr>
+        <tr>
+            <td class="cell"></td>
+            <td class="cell">
+
+            </td>
+            <td class="cell">
+
+            </td>
+        </tr>
+        <tr>
+            <td class="cell">
+
+            </td>
+            <td class="cell">
+
+            </td>
+            <td class="cell">
+
+            </td>
+        </tr>
+    </table>
+    <button onclick="startGame()" id="button">Retry</button>
+    <h1 id="winner"></h1>
+</div>
+    
+    <script>
+        let arr = [[0, 1, 2], [3, 4, 5], [6, 7, 8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
+        let player = "❌",scoreX=0,scoreY=0
+        document.getElementById("scoreX").innerHTML =scoreX
+        document.getElementById("scoreY").innerHTML =scoreY
+        let btn=document.getElementById("button")
+        btn.style.display="none"
+        cells = document.querySelectorAll(".cell");
+        cells.forEach(cell => {
+            cell.addEventListener("click", handleClick)
+        })
+        function handleClick(e) {
+            if (e.target.innerText === "") {
+                e.target.innerText = player
+                checkWinner()
+                switchPlayer()
+                console.log(scoreX,scoreY)
+            }
+
+        }
+        function switchPlayer() {
+            player = player === "❌" ? "⭕" : "❌"
+        }
+        function checkWinner() {
+
+            const matched =
+                arr.some(j =>(
+                    j.every(i => cells[i].innerText == player)
+                ))
+            if (matched) {
+               document.getElementById("winner").innerHTML = player+" Win!!"
+               if(player==="❌")
+               scoreX +=1
+               else
+               scoreY +=1
+               document.getElementById("scoreX").innerHTML = scoreX
+               document.getElementById("scoreY").innerHTML = scoreY
+               btn.style.display = "block"
+            }
+            // if(cells[0].innerText === "❌"&&
+            // cells[1].innerText === "❌"&&
+            // cells[2].innerText === "❌" ||
+            // cells[0].innerText === "⭕"&&
+            // cells[1].innerText === "⭕"&&
+            // cells[2].innerText === "⭕"
+            // ){
+            //     console.log("you won")
+            // }
+            
+        }
+        function startGame() {
+                cells.forEach(cell=>cell.innerText="")
+            }
+    </script>
+</body>
+
+</html>
