@@ -39,14 +39,23 @@
   ctx.lineCap="round"
  
   document.addEventListener("mousedown",(e)=>{
+      if(e.shiftKey){
+          ctx.clearRect(0,0,canvas.width,canvas.height)
+      }
+      else{
       isDraw=true
       x=e.offsetX
       y=e.offsetY
+      }
   })
 
   canvas.addEventListener("mousemove",(e)=>{
+      if(e.ctrlKey){
+        ctx.clearRect(e.offsetX, e.offsetY, 30, 30);
+      }
+      else{
        if(isDraw){ 
-      console.log(e)
+     console.log(e)
       ctx.beginPath()
       ctx.moveTo(x,y)
       ctx.lineTo(e.offsetX,e.offsetY)
@@ -57,18 +66,21 @@
       ctx.strokeStyle=`hsl(${hue},100%,50%)`
       hue++
        }
+    }
   })
   canvas.addEventListener('mouseup',()=>isDraw=false)
   document.addEventListener('keyup',(e)=>{
-      console.log(e)
+    //   console.log(e)
       if(e.shiftKey){
           if(e.key=="ArrowUp")
         lineWidth+=10
         else if(e.key=="ArrowDown")
         lineWidth-=10
+        
       }
       span.innerText="width: "+lineWidth
-      
+     
+    
       
   })
   function clear(){
