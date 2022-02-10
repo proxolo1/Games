@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .secondary{
+            position: absolute;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            top: 0;
+            background-color: black;
+            color: white;
+            margin: auto;
+        }
+      #canvas{
+          cursor:crosshair;
+      }
+    </style>
+</head>
+<body>
+    <div class="secondary" id="mydiv"><span id="span"></span><br>
+    
+    </div>
+    <canvas id="canvas" width="400" height="400"></canvas>
+</body>
+<script>
+    let isDraw=false,x,y,lineWidth=50,hue=0
+  let canvas= document.getElementById("canvas")
+  let span=document.getElementById("span")
+  const ctx=canvas.getContext("2d")
+  canvas.width=window.innerWidth
+  canvas.height=window.innerHeight
+  ctx.strokeStyle="red"
+  ctx.lineJoin="round"
+  ctx.lineCap="round"
+ 
+  document.addEventListener("mousedown",(e)=>{
+      isDraw=true
+      x=e.offsetX
+      y=e.offsetY
+  })
+
+  canvas.addEventListener("mousemove",(e)=>{
+       if(isDraw){ 
+      console.log(e)
+      ctx.beginPath()
+      ctx.moveTo(x,y)
+      ctx.lineTo(e.offsetX,e.offsetY)
+      ctx.lineWidth=lineWidth
+      ctx.stroke()
+      x=e.offsetX
+      y=e.offsetY
+      ctx.strokeStyle=`hsl(${hue},100%,50%)`
+      hue++
+       }
+  })
+  canvas.addEventListener('mouseup',()=>isDraw=false)
+  document.addEventListener('keyup',(e)=>{
+      console.log(e)
+      if(e.shiftKey){
+          if(e.key=="ArrowUp")
+        lineWidth+=10
+        else if(e.key=="ArrowDown")
+        lineWidth-=10
+      }
+      span.innerText="width: "+lineWidth
+      
+      
+  })
+  function clear(){
+   
+  }
+ 
+</script>
+</html>
