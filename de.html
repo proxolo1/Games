@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #canvas {
+            border: 1px solid black;
+            margin: 30px;
+        }
+   
+    </style>
+</head>
+
+<body>
+  <div>Score :<span  id="span"> </span></div>
+    <canvas id="canvas" width="700vh" height="300px"></canvas>
+</body>
+<script>
+    let boxX = boxY = 20, upPressed = downPressed = false, boxW = boxH = 40
+    let span=document.getElementById("span")
+    let canvas = document.getElementById("canvas")
+    let paddleX = canvas.width - 10, paddleY = 120, paddleOffset=40,score = 0
+    let a = canvas.width, b = paddleY + 22
+    // canvas.height =window.innerHeight
+    // canvas.width = window.innerWidth
+    let ctx = canvas.getContext("2d")
+    
+    let interval = setInterval(() => {
+        if (upPressed) {
+            if (boxY <= 0)
+                boxY = canvas.height
+            else
+                boxY -= 10
+        }
+        if (downPressed) {
+            if (boxY >= canvas.height)
+                boxY = 0
+            else
+                boxY += 10;
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        checkCollition()
+        drawBox()
+        drawPaddle(paddleX, paddleY)
+        movePaddle()
+        boxMove()
+
+    }, 80)
+
+    function boxMove() {
+        document.addEventListener("keydown", (e) => {
+            if (e.key == "ArrowUp") {
+                upPressed = true
+                downPressed = false
+            }
+            else if (e.key == "ArrowDown") {
+                upPressed = false
+                downPressed = true
+            }
+        })
+        document.addEventListener("keyup", (e) => {
+            if (e.key == "ArrowUp") {
+                upPressed = false
+                downPressed = false
+            }
+            else if (e.key == "ArrowDown") {
+                upPressed = false
+                downPressed = false
+            }
+        })
+    }
+    function drawBox() {
+        ctx.beginPath();
+        ctx.rect(boxX, boxY, boxW, boxH)
+        ctx.strokeStyle = "red"
+        ctx.stroke()
+        ctx.closePath()
+    }
+    function drawPaddle(paddleX, paddleY) {
+        ctx.beginPath();
+        ctx.moveTo(paddleX, 0)
+        ctx.lineTo(paddleX, paddleY)
+        ctx.stroke()
+        ctx.closePath()
+        ctx.beginPath();
+        ctx.moveTo(paddleX, canvas.height)
+        ctx.lineTo(paddleX, paddleY + (boxH + paddleOffset))
+        ctx.stroke()
+        ctx.closePath()
+       
+    }
+    function movePaddle() {
+        if (paddleX == 0) {
+            paddleX = canvas.width
+            paddleY = Math.floor(Math.random() *canvas.height-30)
+        }
+        else {
+            paddleX -= 10
+            span.innerText= score++
+
+        }
+    }
+    function checkCollition() {
+        if (boxX + boxW == paddleX && (boxY <= paddleY || boxY + boxH >= paddleY + boxH + paddleOffset)) {
+            console.log(boxY + boxH)
+            console.log(paddleY + boxH)
+            alert("collided")
+            paddleX = canvas.width
+        }
+    }
+
+</script>
+
+</html>
